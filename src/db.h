@@ -14,7 +14,7 @@
 #include <db_cxx.h>
 
 class CAddress;
-class CAddrMan;
+class CAddrman;
 class CBlockLocator;
 class CDiskBlockIndex;
 class CDiskTxPos;
@@ -37,6 +37,7 @@ private:
     bool fDbEnvInit;
     bool fMockDb;
     boost::filesystem::path pathEnv;
+    std::string strPath;
 
     void EnvShutdown();
 
@@ -311,42 +312,6 @@ public:
 };
 
 
-
-
-
-
-
-/** Access to the transaction database (blkindex.dat) */
-class CTxDB : public CDB
-{
-public:
-    CTxDB(const char* pszMode="r+") : CDB("blkindex.dat", pszMode) { }
-private:
-    CTxDB(const CTxDB&);
-    void operator=(const CTxDB&);
-public:
-    bool ReadTxIndex(uint256 hash, CTxIndex& txindex);
-    bool UpdateTxIndex(uint256 hash, const CTxIndex& txindex);
-    bool AddTxIndex(const CTransaction& tx, const CDiskTxPos& pos, int nHeight);
-    bool EraseTxIndex(const CTransaction& tx);
-    bool ContainsTx(uint256 hash);
-    bool ReadDiskTx(uint256 hash, CTransaction& tx, CTxIndex& txindex);
-    bool ReadDiskTx(uint256 hash, CTransaction& tx);
-    bool ReadDiskTx(COutPoint outpoint, CTransaction& tx, CTxIndex& txindex);
-    bool ReadDiskTx(COutPoint outpoint, CTransaction& tx);
-    bool WriteBlockIndex(const CDiskBlockIndex& blockindex);
-    bool ReadHashBestChain(uint256& hashBestChain);
-    bool WriteHashBestChain(uint256 hashBestChain);
-    bool ReadBestInvalidWork(CBigNum& bnBestInvalidWork);
-    bool WriteBestInvalidWork(CBigNum bnBestInvalidWork);
-    bool LoadBlockIndex();
-private:
-    bool LoadBlockIndexGuts();
-};
-
-
-
-
 /** Access to the (IP) address database (peers.dat) */
 class CAddrDB
 {
@@ -354,8 +319,8 @@ private:
     boost::filesystem::path pathAddr;
 public:
     CAddrDB();
-    bool Write(const CAddrMan& addr);
-    bool Read(CAddrMan& addr);
+    bool Write(const CAddrman& addr);
+    bool Read(CAddrman& addr);
 };
 
 #endif // BITCOIN_DB_H
